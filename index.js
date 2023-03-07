@@ -1,5 +1,11 @@
+require('dotenv').config();
+
 const express = require('express');
 const app = express();
+
+app.use(express.urlencoded({ extended: true }));
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
 
 const apiRouter = require('./api');
 app.use('/api', apiRouter);
@@ -21,5 +27,5 @@ client.connect();
 
 const PORT = 3000;
 app.listen(PORT, () => {
-  console.log('Server running on port', PORT)
+    console.log('Server running on port', PORT)
 });

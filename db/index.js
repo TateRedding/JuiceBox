@@ -74,6 +74,19 @@ const getUserById = async (userId) => {
     };
 };
 
+const getUserByUsername = async (username) => {
+    try {
+        const { rows: [user] } = await client.query(`
+            SELECT *
+            FROM users
+            WHERE username=$1
+        `, [username]);
+        return user;
+    } catch (error) {
+        throw error;
+    };
+};
+
 // POSTS FUNCTIONS
 
 const getAllPosts = async () => {
@@ -275,11 +288,12 @@ module.exports = {
     getAllUsers,
     createUser,
     updateUser,
+    getUserById,
+    getUserByUsername,
     getAllPosts,
     getPostsByTagName,
     createPost,
     updatePost,
-    getUserById,
     createTags,
     addTagsToPost,
     getAllTags
