@@ -63,6 +63,13 @@ const getUserById = async (userId) => {
             WHERE id=${userId}
         `);
 
+        if (!user) {
+            throw {
+                name: 'UserNotFoundError',
+                message: 'Could not find a user with that ID'
+            };
+        };
+
         if (Object.keys(user).length) {
             delete user.password;
             user.posts = await getPostsByUser(userId);

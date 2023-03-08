@@ -1,7 +1,8 @@
 const express = require('express');
 const usersRouter = express.Router();
 
-const { getAllUsers, getUserByUsername, createUser } = require('../db');
+const { getAllUsers, getUserByUsername, createUser, getUserById, updateUser } = require('../db');
+const { requireUser } = require('./utils');
 
 const jwt = require('jsonwebtoken');
 
@@ -89,6 +90,27 @@ usersRouter.post('/register', async (req, res, next) => {
         });
     } catch ({ name, message }) {
         next({ name, message });
+    };
+});
+
+usersRouter.delete('/:userId', requireUser, async (req, res, next) => {
+    try {
+        const user = await getUserById(req.params.userId);
+
+        if (user && user.id === req.user.id) {
+            const updatedUser = await updatedUser(user.id, { active: false });
+            res.send({ user: updatedUser });;
+        } else {
+            next(user ? {
+                name: 'UnauthorizedUserError',
+                message: 'You can only deactivate your own account'
+            } : {
+                name: 'UserNotFoundError',
+                message: 'User ID not recognized'
+            });
+        };
+    } catch ({ name, message }) {
+        next({ name, message })
     };
 });
 
