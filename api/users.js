@@ -13,7 +13,10 @@ usersRouter.use((req, res, next) => {
 
 usersRouter.get('/', async (req, res) => {
     try {
-        const users = await getAllUsers();
+        const allUsers = await getAllUsers();
+        const users = allUsers.filter(user => {
+            return (user.active || (req.user && user.id === req.user.id));
+        });
         res.send({
             users
         });
@@ -98,8 +101,8 @@ usersRouter.delete('/:userId', requireUser, async (req, res, next) => {
         const user = await getUserById(req.params.userId);
 
         if (user && user.id === req.user.id) {
-            const updatedUser = await updatedUser(user.id, { active: false });
-            res.send({ user: updatedUser });;
+            const updatedUser = await updateUser(user.id, { active: false });
+            res.send({ user: updatedUser });
         } else {
             next(user ? {
                 name: 'UnauthorizedUserError',

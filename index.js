@@ -25,7 +25,7 @@ app.use((req, res, next) => {
 const { client } = require('./db');
 client.connect();
 
-const PORT = 3000;
+const { PORT = 3000 } = process.env;
 app.listen(PORT, () => {
     console.log('Server running on port', PORT)
 });

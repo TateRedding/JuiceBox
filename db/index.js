@@ -1,5 +1,5 @@
 const { Client } = require('pg');
-const client = new Client('postgres://localhost:5432/juicebox-dev');
+const client = new Client(process.env.DATABASE_URL || 'postgres://localhost:5432/juicebox-dev');
 
 // USERS FUNCTIONS
 
@@ -204,7 +204,7 @@ const getPostById = async (postId) => {
         `, [postId]);
 
         const { rows: [author] } = await client.query(`
-            SELECT id, username, name, location
+            SELECT id, username, name, location, active
             FROM users
             WHERE id=$1;
         `, [post.authorId]);
